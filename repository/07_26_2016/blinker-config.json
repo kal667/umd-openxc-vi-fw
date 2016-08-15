@@ -1,0 +1,23 @@
+{	"name": "blinker",
+	"buses":{
+		"ms": {
+			"controller": 2,
+			"speed": 125000
+		}
+
+	},
+	"messages": {
+		"0x383": {
+			"bus": "ms",
+			"bit_numbering_inverted": false,
+			"signals": {
+				"My_Blinker": {
+					"generic_name": "left_blinker",
+					"bit_position": 0,
+					"bit_size": 8,
+					"writable": true
+				}
+			}
+		}
+	}
+}
