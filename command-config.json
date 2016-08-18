@@ -59,17 +59,11 @@
 					"generic_name": "gear",
 					"bit_position": 0,
 					"bit_size": 64,
-					"states": {
-						"R": [11601272640106421808],
-						"N": [17149707381026872912],
-						"D": [1657324662872366704],
-						"M": [1657324662872366802]
-					},
+					"encoder": "gearEncoder",
 					"writable": true
 				}
 			}
-		}
-	},
+		},
 		"0x383": {
 			"bus": "ms",
 			"bit_numbering_inverted": false,
@@ -86,20 +80,50 @@
 				}
 			}
 		},
-		"0x3C3": {
+		"0x3AB": {
 			"bus": "ms",
 			"bit_numbering_inverted": false,
 			"signals": {
 				"Lights": {
 					"generic_name": "lights",
 					"bit_position": 0,
-					"bit_size": 64,
+					"bit_size": 40,
 					"encoder": "lightsBooleanEncoder",
 					"writable": true
 				}
 			}
 		},
-		"0x383": {
+		"0x3B1": {
+			"bus": "ms",
+			"bit_numbering_inverted": false,
+			"signals": {
+				"DoorAjar": {
+					"generic_name": "door_ajar",
+					"bit_position": 0,
+					"bit_size": 8,
+					"states": {
+						"driver": [128],
+						"passenger": [64],
+						"rear_driver":[16],
+						"rear_passenger":[32]
+					},
+					"writable": true
+				}
+			}
+		},
+		"0x2E0": {
+			"bus": "ms",
+			"bit_numbering_inverted": false,
+			"signals": {
+				"Volume": {
+					"generic_name": "infotainment_button",
+					"bit_position": 0,
+					"bit_size": 16,
+					"writable": true
+				}
+			}
+		},
+		"0x3A0": {
 			"bus": "ms",
 			"bit_numbering_inverted": false,
 			"signals": {
@@ -113,6 +137,10 @@
 			}
 		}
 	},
+	"commands": [
+		{"name": "infotainment",
+			"handler": "infotainmentHandler"}
+	],
 	"extra_sources": [
 		"my_handlers.cpp"
 	]
