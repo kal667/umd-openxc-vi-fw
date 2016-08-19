@@ -104,8 +104,8 @@
 					"states": {
 						"driver": [128],
 						"passenger": [64],
-						"rear_driver":[16],
-						"rear_passenger":[32]
+						"rear_right":[16],
+						"rear_left":[32]
 					},
 					"writable": true
 				}

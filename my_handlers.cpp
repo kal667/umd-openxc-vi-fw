@@ -2,6 +2,14 @@
 
 namespace can = openxc::can;
 
+#include <time.h>
+ 
+void sleep(unsigned int mseconds)
+{
+    clock_t goal = mseconds + clock();
+    while (goal > clock());
+}
+
 using openxc::can::lookupSignal;
 
 //Encodes decimal RPM value
@@ -95,42 +103,52 @@ void infotainmentHandler(const char* name, openxc_DynamicField* value,
 	openxc_DynamicField* event, CanSignal* signals, int signalCount) {
 	
 	CanMessage message = {0};
-	openxc_DynamicField* can_value = 0;
+	CanMessage can_message = {0};
+	
+	uint64_t can_value = {0};
+	//uint64_t reset = 0;
 
 	const char* button = value->string_value;//this probably isn't right
 
-	CanSignal* buttonSignal = lookupSignal("infotainment_button", signals,
-		signalCount);
+	//CanSignal* buttonSignal = lookupSignal("infotainment_button", signals,
+	//	signalCount);
 
 	CanBus* bus = openxc::can::lookupBus(2, openxc::signals::getCanBuses(), openxc::signals::getCanBusCount());
 
 	if (!strcmp("v_up", button)) {
-		can_value = 11144;//0x2B88;
-		message = {0x2E0, STANDARD, {0x2B, 0x48}, 2};
+		//can_value = 11144;//0x2B88;
+		can_message = {0x2E0, STANDARD, {0x2B, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 8};
+		message = {0x2E0, STANDARD, {0x2B, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 8};
+		//reset = 0x2B48;
 	}
 
 	if (!strcmp("v_down", button)) {
 		can_value = 11400;//0x2C88;
-		message = {0x2E0, STANDARD, {0x2C, 0x48}, 2};
+		//message = {0x2E0, STANDARD, {0x2C, 0x48}, 2};
 	}
 
 	if (!strcmp("t_up", button)) {
 		can_value = 10632;//0x2988;
-		message = {0x2E0, STANDARD, {0x29, 0x48}, 2};
+		//message = {0x2E0, STANDARD, {0x29, 0x48}, 2};
 	}
 
 	if (!strcmp("t_down", button)) {
 		can_value = 10888;//0x2A88;
-		message = {0x2E0, STANDARD, {0x2A, 0x48}, 2};
+		//message = {0x2E0, STANDARD, {0x2A, 0x48}, 2};
 	}
 
 	if (!strcmp("t_toggle", button)) {
 		can_value = 32904;//0x8088;
-		message = {0x2E0, STANDARD, {0x80, 0x48}, 2};
+		//message = {0x2E0, STANDARD, {0x80, 0x48}, 2};
 	}
 
+	//can::write::sendEncodedSignal(buttonSignal, reset, true);
+	can::write::enqueueMessage(bus, &can_message);
+	can::write::flushOutgoingCanMessageQueue(bus);
+	sleep(10000000);
+	//can::write::sendEncodedSignal(buttonSignal, can_value, true);
 	can::write::enqueueMessage(bus, &message);
-	can::write::encodeAndSendSignal(buttonSignal, can_value, true);
+	can::write::flushOutgoingCanMessageQueue(bus);
 }
 
 
