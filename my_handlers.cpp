@@ -110,14 +110,16 @@ void infotainmentHandler(const char* name, openxc_DynamicField* value,
 
 	const char* button = value->string_value;//this probably isn't right
 
-	//CanSignal* buttonSignal = lookupSignal("infotainment_button", signals,
+	CanSignal* buttonSignal = lookupSignal("infotainment_button", signals,
+		signalCount);
+	//CanSignal* dummySignal = lookupSignal("set_mph", signals,
 	//	signalCount);
 
 	CanBus* bus = openxc::can::lookupBus(2, openxc::signals::getCanBuses(), openxc::signals::getCanBusCount());
 
 	if (!strcmp("v_up", button)) {
-		//can_value = 11144;//0x2B88;
-		can_message = {0x2E0, STANDARD, {0x2B, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 8};
+		can_value = 11144;//0x2B88;
+		can_message = {0x201, STANDARD, {0x2B, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 8};
 		message = {0x2E0, STANDARD, {0x2B, 0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 8};
 		//reset = 0x2B48;
 	}
@@ -142,13 +144,24 @@ void infotainmentHandler(const char* name, openxc_DynamicField* value,
 		//message = {0x2E0, STANDARD, {0x80, 0x48}, 2};
 	}
 
-	//can::write::sendEncodedSignal(buttonSignal, reset, true);
-	can::write::enqueueMessage(bus, &can_message);
-	can::write::flushOutgoingCanMessageQueue(bus);
-	sleep(10000000);
+	can::write::sendEncodedSignal(buttonSignal, can_value, true);
+	//can::write::enqueueMessage(bus, &can_message);
+	//can::write::flushOutgoingCanMessageQueue(bus);
+	//sleep(1000000000);
+	//for (int i = 0; i < 2; i++) {
+		can::write::enqueueMessage(bus, &can_message);
+		can::write::flushOutgoingCanMessageQueue(bus);
+		can::write::enqueueMessage(bus, &can_message);
+		can::write::flushOutgoingCanMessageQueue(bus);
+		can::write::enqueueMessage(bus, &can_message);
+		can::write::flushOutgoingCanMessageQueue(bus);
+		can::write::enqueueMessage(bus, &can_message);
+		can::write::flushOutgoingCanMessageQueue(bus);
+		//can::write::sendEncodedSignal(dummySignal, can_value, true);
+	//}
 	//can::write::sendEncodedSignal(buttonSignal, can_value, true);
 	can::write::enqueueMessage(bus, &message);
-	can::write::flushOutgoingCanMessageQueue(bus);
+	//can::write::flushOutgoingCanMessageQueue(bus);
 }
 
 

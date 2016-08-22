@@ -22,13 +22,7 @@
 					"bit_size": 64,
 					"encoder": "ourRPMWriteEncoder",
 					"writable": true
-				}
-			}
-		},
-		"0x201":{
-			"bus": "hs",
-			"bit_numbering_inverted": false,
-			"signals": {
+				},
 				"MPH": {
 					"generic_name": "set_mph",
 					"bit_position": 0,
