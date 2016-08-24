@@ -10,41 +10,35 @@ using openxc::can::lookupSignal;
 #include <sstream>
 #include <stdlib.h>
 
-const int ROWS = 100; // CAN messages
-const int COLS = 22; // Colums per message
-const int BUFFSIZE = 80;
+std::vector<std::vector<int> > readCSV() {
 
-int **readCSV() {
-	
-	int **array = 0;
-	std::ifstream file( "power_steering.csv" );
-	std::string line; 
-	int col = 0;
-	int row = 0;
-	
-    if (!file.is_open())
-    {
-        return 0;
-    }
+   std::vector<std::vector<int> > array;
+   std::ifstream file( "power_steering.csv" );
+   std::string line; 
 
-	for (int i = 1; i < 98; i++){
-    	std::getline(file, line); // skip the first 98 lines
-	}
+   if (!file.is_open())
+   {
+      return array;
+   }
 
-	while( std::getline( file, line ) ) {
-	
-		std::istringstream iss( line );
-		std::string result;
-	
-		while( std::getline( iss, result, ',' ) ) {
+   for (int i = 1; i < 98; i++){
+      std::getline(file, line); // skip the first 97 lines
+   }
 
-		    array[row][col] = atoi( result.c_str() );
-		    col = col+1;
-	  	}
-		row = row+1;
-		col = 0;
-	}
-	return array;
+   while( std::getline( file, line ) ) {
+
+      std::istringstream iss( line );
+      std::string result;
+
+      std::vector<int> a2;
+      while( std::getline( iss, result, ',' ) ) {
+         a2.push_back(strtoul( result.c_str(), NULL, 16 ));
+      }
+
+      array.push_back(a2);
+   }
+
+   return array;
 }
 
 
@@ -71,18 +65,4 @@ void powerSteeringHandler(const char* name, openxc_DynamicField* value,
 		can::write::flushOutgoingCanMessageQueue(bus);
 		can::write::sendEncodedSignal(rpmSignal, can_value, true);
 	}
-}
-
-//Encodes decimal RPM value
-uint64_t ourRPMWriteEncoder(CanSignal* signal, openxc_DynamicField* value, bool* send) {
-		
-	*send = true;
-	
-	uint64_t can_value = value->numeric_value;
-
-	can_value = can_value / 64;
-	can_value <<= 56; //shift to CAN bytes 0 and 1
-	can_value = can_value | 0x0000000028000000; // OR with 0x00000028
-
-	return can_value;
 }

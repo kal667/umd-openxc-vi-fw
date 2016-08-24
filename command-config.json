@@ -10,21 +10,6 @@
 			"speed": 125000
 		}
 	},
-	"messages": {
-		"0x201": {
-			"bus": "hs",
-			"bit_numbering_inverted": false,
-			"signals": {
-				"RPM": {
-					"generic_name": "set_rpm",
-					"bit_position": 0,
-					"bit_size": 64,
-					"encoder": "ourRPMWriteEncoder",
-					"writable": true
-				}
-			}
-		}
-	},
 	"commands": [
 		{"name": "power_steering_attack",
 			"handler": "powerSteeringHandler"}
